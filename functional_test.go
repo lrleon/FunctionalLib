@@ -78,7 +78,7 @@ func TestMap(t *testing.T) {
 
 	assert.True(t, All(Zip(tree, m), func(i interface{}) bool {
 		p := i.(Pair)
-		return 2*p.item1.(int) == p.item2.(int)
+		return 2*p.Item1.(int) == p.Item2.(int)
 	}))
 }
 
@@ -93,7 +93,7 @@ func TestZipUnzip(t *testing.T) {
 
 	assert.True(t, All(lzip, func(i interface{}) bool {
 		p := i.(Pair)
-		return p.item1 == p.item2
+		return p.Item1 == p.Item2
 	}))
 
 	r1, r2 := Unzip(lzip)
@@ -138,7 +138,7 @@ func TestMapIf(t *testing.T) {
 
 	assert.True(t, All(Zip(lmap, Filter(tree, pred)), func(i interface{}) bool {
 		p := i.(Pair)
-		return p.item1.(int) == 2*p.item2.(int)
+		return p.Item1.(int) == 2*p.Item2.(int)
 	}))
 }
 

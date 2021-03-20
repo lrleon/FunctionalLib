@@ -18,6 +18,10 @@ type Sequence interface {
 	CreateIterator() interface{}
 }
 
+type Pair struct {
+	Item1, Item2 interface{}
+}
+
 // Execute operation receiving every item of the sequence. Return seq
 func ForEach(seq Sequence, operation func(interface{})) interface{} {
 
@@ -80,10 +84,6 @@ func Filter(seq Sequence, predicate func(interface{}) bool) *Seq.Slist {
 	return ret
 }
 
-type Pair struct {
-	item1, item2 interface{}
-}
-
 // Zip two lists into one list of pair. The result is truncated to the shortest list
 func Zip(s1, s2 Sequence) *Seq.Slist {
 
@@ -93,8 +93,8 @@ func Zip(s1, s2 Sequence) *Seq.Slist {
 	for it1.HasCurr() && it2.HasCurr() {
 
 		ret.Append(Pair{
-			item1: it1.GetCurr(),
-			item2: it2.GetCurr(),
+			Item1: it1.GetCurr(),
+			Item2: it2.GetCurr(),
 		})
 
 		it1.Next()
@@ -113,8 +113,8 @@ func Unzip(seq *Seq.Slist) (*Seq.Slist, *Seq.Slist) {
 	for it := seq.CreateIterator().(*Seq.Iterator); it.HasCurr(); it.Next() {
 
 		curr := it.GetCurr().(Pair)
-		l1.Append(curr.item1)
-		l2.Append(curr.item2)
+		l1.Append(curr.Item1)
+		l2.Append(curr.Item2)
 	}
 
 	return l1, l2

@@ -229,3 +229,42 @@ func TestPosition(t *testing.T) {
 		}), i)
 	}
 }
+
+func TestNewTuple(t *testing.T) {
+
+	tuple4 := NewTuple(1, 2, 3, 4)
+	assert.Equal(t, tuple4.Size(), 4)
+	assert.Equal(t, tuple4.Nth(0).(int), 1)
+}
+
+func TestTZip(t *testing.T) {
+
+	l1 := Seq.New(1, 2, 3, 4, 5)
+	l2 := Seq.New("A", "B", "C", "D", "E")
+	l3 := Seq.New(-5, -4, -3, -2, -1)
+
+	zl := TZip(l1, l2, l3)
+
+	assert.Equal(t, zl.Size(), l1.Size())
+
+	assert.True(t, All(Zip(zl, l1), func(item interface{}) bool {
+		pair := item.(Pair)
+		tuple := pair.Item1.(*Tuple)
+		i := pair.Item2.(int)
+		return tuple.Nth(0) == i
+	}))
+
+	assert.True(t, All(Zip(zl, l2), func(item interface{}) bool {
+		pair := item.(Pair)
+		tuple := pair.Item1.(*Tuple)
+		str := pair.Item2.(string)
+		return tuple.Nth(1) == str
+	}))
+
+	assert.True(t, All(Zip(zl, l3), func(item interface{}) bool {
+		pair := item.(Pair)
+		tuple := pair.Item1.(*Tuple)
+		i := pair.Item2.(int)
+		return tuple.Nth(2) == i
+	}))
+}

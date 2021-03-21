@@ -58,7 +58,7 @@ func (tuple *Tuple) Traverse(f func(interface{}) bool) bool {
 }
 
 func (tuple *Tuple) Append(item interface{}, items ...interface{}) interface{} {
-	*tuple.l = append(*tuple.l, items)
+	*tuple.l = append(*tuple.l, item)
 	for _, i := range items {
 		*tuple.l = append(*tuple.l, i)
 	}

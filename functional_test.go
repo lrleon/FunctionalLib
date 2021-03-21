@@ -268,3 +268,35 @@ func TestTZip(t *testing.T) {
 		return tuple.Nth(2) == i
 	}))
 }
+
+func TestTUnzip(t *testing.T) {
+
+	l1 := Seq.New(1, 2, 3, 4, 5)
+	l2 := Seq.New("A", "B", "C", "D", "E")
+	l3 := Seq.New(-5, -4, -3, -2, -1)
+
+	zl := TZip(l1, l2, l3)
+
+	tuple := TUnzip(zl)
+
+	assert.True(t, All(Zip(tuple.Nth(0).(*Seq.Slist), l1), func(p interface{}) bool {
+		pair := p.(Pair)
+		i1 := pair.Item1.(int)
+		i2 := pair.Item2.(int)
+		return i1 == i2
+	}))
+
+	assert.True(t, All(Zip(tuple.Nth(1).(*Seq.Slist), l2), func(p interface{}) bool {
+		pair := p.(Pair)
+		i1 := pair.Item1.(string)
+		i2 := pair.Item2.(string)
+		return i1 == i2
+	}))
+
+	assert.True(t, All(Zip(tuple.Nth(2).(*Seq.Slist), l3), func(p interface{}) bool {
+		pair := p.(Pair)
+		i1 := pair.Item1.(int)
+		i2 := pair.Item2.(int)
+		return i1 == i2
+	}))
+}

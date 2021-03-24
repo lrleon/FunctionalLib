@@ -1,6 +1,7 @@
 package FunctionalLib
 
 import (
+	"fmt"
 	Seq "github.com/geniussportsgroup/Slist"
 	Set "github.com/geniussportsgroup/treaps"
 	"github.com/stretchr/testify/assert"
@@ -298,5 +299,130 @@ func TestTUnzip(t *testing.T) {
 		i1 := pair.Item1.(int)
 		i2 := pair.Item2.(int)
 		return i1 == i2
+	}))
+}
+
+func TestTuple_ReverseInterval(t *testing.T) {
+
+	tuple := NewTuple(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+	tuple.ReverseInterval(1, 5)
+	assert.Equal(t, tuple.Nth(1).(int), 5)
+	assert.Equal(t, tuple.Nth(2).(int), 4)
+	assert.Equal(t, tuple.Nth(3).(int), 3)
+	assert.Equal(t, tuple.Nth(4).(int), 2)
+	assert.Equal(t, tuple.Nth(5).(int), 1)
+
+	assert.Panics(t, func() {
+		tuple.ReverseInterval(5, 3)
+	})
+
+	assert.Panics(t, func() {
+		tuple.ReverseInterval(-1, 3)
+	})
+
+	assert.Panics(t, func() {
+		tuple.ReverseInterval(1, -3)
+	})
+
+	assert.Panics(t, func() {
+		tuple.ReverseInterval(10, 13)
+	})
+
+	assert.Panics(t, func() {
+		tuple.ReverseInterval(5, 13)
+	})
+
+	assert.Panics(t, func() {
+		tuple.ReverseInterval(5, 3)
+	})
+}
+
+func TestTuple_Reverse(t *testing.T) {
+
+	tuple := NewTuple(0, 1, 2, 3, 4, 5)
+	tuple.Reverse()
+	for i := 0; i < tuple.Size(); i++ {
+		assert.Equal(t, tuple.Nth(i), tuple.Size()-i-1)
+	}
+
+	tuple.Reverse()
+	for i := 0; i < tuple.Size(); i++ {
+		assert.Equal(t, tuple.Nth(i), i)
+	}
+}
+
+func TestTuple_RotateIntervalRightInPlace(t *testing.T) {
+
+	tuple := NewTuple(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+	tuplep := tuple.clone()
+	ForEach(tuple, func(i interface{}) {
+		fmt.Print(i, " ")
+	})
+	fmt.Println()
+
+	tuple.RotateIntervalRightInPlace(2, 5, 2)
+	ForEach(tuple, func(i interface{}) {
+		fmt.Print(i, " ")
+	})
+	fmt.Println()
+
+	assert.True(t, All(Zip(tuple.RotateIntervalLeftInPlace(2, 5, 2), tuplep),
+		func(pair interface{}) bool {
+			return pair.(Pair).Item1.(int) == pair.(Pair).Item2.(int)
+		}))
+}
+
+func TestTuple_RotateIntervalLeftInPlace(t *testing.T) {
+
+	tuple := NewTuple(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+	tuplep := tuple.clone()
+	ForEach(tuple, func(i interface{}) {
+		fmt.Print(i, " ")
+	})
+	fmt.Println()
+
+	tuple.RotateIntervalLeftInPlace(2, 5, 2)
+	ForEach(tuple, func(i interface{}) {
+		fmt.Print(i, " ")
+	})
+	fmt.Println()
+
+	assert.True(t, All(Zip(tuple.RotateIntervalRightInPlace(2, 5, 2), tuplep),
+		func(pair interface{}) bool {
+			return pair.(Pair).Item1.(int) == pair.(Pair).Item2.(int)
+		}))
+}
+
+func TestTuple_clone(t *testing.T) {
+
+	tuple := NewTuple(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+	assert.True(t, All(Zip(tuple, tuple.clone()), func(pair interface{}) bool {
+		return pair.(Pair).Item1.(int) == pair.(Pair).Item2.(int)
+	}))
+}
+
+func TestTuple_RotationsInPlace(t *testing.T) {
+
+	tuple := NewTuple(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+	tuplep := tuple.clone()
+
+	tuple.RotateRightInPlace(3)
+
+	assert.True(t, All(Zip(tuple.RotateLeftInPlace(3), tuplep), func(pair interface{}) bool {
+		return pair.(Pair).Item1.(int) == pair.(Pair).Item2.(int)
+	}))
+}
+
+func TestTuple_Rotations(t *testing.T) {
+
+	tuple := NewTuple(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+	assert.True(t, All(Zip(tuple, tuple.RotateRight(3).RotateLeft(3)), func(pair interface{}) bool {
+		return pair.(Pair).Item1.(int) == pair.(Pair).Item2.(int)
+	}))
+
+	assert.True(t, All(Zip(tuple, tuple.RotateLeft(3).RotateRight(3)), func(pair interface{}) bool {
+		return pair.(Pair).Item1.(int) == pair.(Pair).Item2.(int)
 	}))
 }

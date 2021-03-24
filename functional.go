@@ -135,8 +135,8 @@ func (tuple *Tuple) Nth(i int) interface{} {
 	return (*tuple.l)[i]
 }
 
-// Reverse the subsequence between i and k
-func (tuple *Tuple) ReverseInterval(i, j int) {
+// ReverseInPlace the subsequence between i and k
+func (tuple *Tuple) ReverseInterval(i, j int) *Tuple {
 
 	sz := tuple.Size()
 	if i < 0 || i >= sz {
@@ -156,11 +156,18 @@ func (tuple *Tuple) ReverseInterval(i, j int) {
 		i++
 		j--
 	}
+
+	return tuple
 }
 
-// Reverse the tuple
-func (tuple *Tuple) Reverse() {
-	tuple.ReverseInterval(0, tuple.Size()-1)
+// Reverse the tuple in place
+func (tuple *Tuple) ReverseInPlace() *Tuple {
+	return tuple.ReverseInterval(0, tuple.Size()-1)
+}
+
+// Return a reversed copy of tuple
+func (tuple *Tuple) Reverse() *Tuple {
+	return tuple.clone().ReverseInterval(0, tuple.Size()-1)
 }
 
 func (tuple *Tuple) validateRotateIndexes(i, j, n int) {

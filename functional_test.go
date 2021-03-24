@@ -341,12 +341,12 @@ func TestTuple_ReverseInterval(t *testing.T) {
 func TestTuple_Reverse(t *testing.T) {
 
 	tuple := NewTuple(0, 1, 2, 3, 4, 5)
-	tuple.Reverse()
+	tuple.ReverseInPlace()
 	for i := 0; i < tuple.Size(); i++ {
 		assert.Equal(t, tuple.Nth(i), tuple.Size()-i-1)
 	}
 
-	tuple.Reverse()
+	tuple.ReverseInPlace()
 	for i := 0; i < tuple.Size(); i++ {
 		assert.Equal(t, tuple.Nth(i), i)
 	}

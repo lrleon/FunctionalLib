@@ -1,6 +1,7 @@
 package FunctionalLib
 
 import (
+	"fmt"
 	Seq "github.com/geniussportsgroup/Slist"
 )
 
@@ -20,14 +21,17 @@ type Sequence interface {
 	CreateIterator() interface{}
 }
 
+// A pair of interfaces. Returned by Zip
 type Pair struct {
 	Item1, Item2 interface{}
 }
 
+// Represent a tuple
 type Tuple struct {
 	l *[]interface{}
 }
 
+// Return a new tuple with the received elements
 func NewTuple(items ...interface{}) *Tuple {
 
 	s := make([]interface{}, 0, len(items))
@@ -38,25 +42,29 @@ func NewTuple(items ...interface{}) *Tuple {
 	return &tuple
 }
 
+// Build a tuple for storing n elements
 func BuildTuple(n int) *Tuple {
 	s := make([]interface{}, n, n)
 	return &Tuple{l: &s}
 }
 
+// Set the i-th element of the tuple with item
 func (tuple *Tuple) Set(i int, item interface{}) {
 	(*tuple.l)[i] = item
 }
 
-func (tuple *Tuple) Traverse(f func(interface{}) bool) bool {
+// Traverse the tuple an executes operation on each element
+func (tuple *Tuple) Traverse(operation func(interface{}) bool) bool {
 	ptr := tuple.l
 	for i := 0; i < len(*tuple.l); i++ {
-		if !f((*ptr)[i]) {
+		if !operation((*ptr)[i]) {
 			return false
 		}
 	}
 	return true
 }
 
+// Append one or more elements to the tuple
 func (tuple *Tuple) Append(item interface{}, items ...interface{}) interface{} {
 	*tuple.l = append(*tuple.l, item)
 	for _, i := range items {
@@ -65,16 +73,19 @@ func (tuple *Tuple) Append(item interface{}, items ...interface{}) interface{} {
 	return tuple
 }
 
+// Return the length of the tuple
 func (tuple *Tuple) Size() int {
 	return len(*tuple.l)
 }
 
+// Swap in O(1) two tuples
 func (tuple *Tuple) Swap(other interface{}) interface{} {
 	otherTuple := other.(*Tuple)
 	tuple.l, otherTuple.l = otherTuple.l, tuple.l
 	return tuple
 }
 
+// Return true if the tuple is empty
 func (tuple *Tuple) IsEmpty() bool {
 	return tuple.Size() == 0
 }
@@ -84,6 +95,7 @@ type TupleIterator struct {
 	pos   int
 }
 
+// Return an iterator to the tuple compliant with the interface Sequence
 func (tuple *Tuple) CreateIterator() interface{} {
 	return &TupleIterator{
 		tuple: tuple,
@@ -91,30 +103,139 @@ func (tuple *Tuple) CreateIterator() interface{} {
 	}
 }
 
+// Return an new iterator to the tuple
 func NewTupleIterator(tuple Tuple) *TupleIterator {
 	return tuple.CreateIterator().(*TupleIterator)
 }
 
+// Return true if the iterator is on a element
 func (it *TupleIterator) HasCurr() bool {
 	return it.pos < len(*it.tuple.l)
 }
 
+// Return the element of which the iterator is positioned
 func (it *TupleIterator) GetCurr() interface{} {
 	return (*it.tuple.l)[it.pos]
 }
 
-func (tuple *Tuple) Nth(i int) interface{} {
-	return (*tuple.l)[i]
-}
-
+// Advance the iterator to the next item of the tuple
 func (it *TupleIterator) Next() interface{} {
 	it.pos++
 	return it
 }
 
+// Reset the iterator to the first element
 func (it *TupleIterator) ResetFirst() interface{} {
 	it.pos = 0
 	return it
+}
+
+// Return the n-th element of the tuple
+func (tuple *Tuple) Nth(i int) interface{} {
+	return (*tuple.l)[i]
+}
+
+// ReverseInPlace the subsequence between i and k
+func (tuple *Tuple) ReverseInterval(i, j int) *Tuple {
+
+	sz := tuple.Size()
+	if i < 0 || i >= sz {
+		panic(fmt.Sprintf("Invalid value for i = %d", i))
+	}
+
+	if j < 0 || j >= sz {
+		panic(fmt.Sprintf("Invalid value for j = %d", j))
+	}
+
+	if i > j {
+		panic(fmt.Sprintf("i = %d is greater than j = %d", i, j))
+	}
+
+	for i <= j {
+		(*tuple.l)[i], (*tuple.l)[j] = (*tuple.l)[j], (*tuple.l)[i]
+		i++
+		j--
+	}
+
+	return tuple
+}
+
+// Reverse the tuple in place
+func (tuple *Tuple) ReverseInPlace() *Tuple {
+	return tuple.ReverseInterval(0, tuple.Size()-1)
+}
+
+// Return a reversed copy of tuple
+func (tuple *Tuple) Reverse() *Tuple {
+	return tuple.clone().ReverseInterval(0, tuple.Size()-1)
+}
+
+func (tuple *Tuple) validateRotateIndexes(i, j, n int) {
+	if i > j {
+		panic(fmt.Sprintf("%d < %d", i, j))
+	}
+
+	if i < 0 || i >= tuple.Size() || j < 0 || j >= tuple.Size() {
+		panic(fmt.Sprintf("Invalid i = %d or j = %d", i, j))
+	}
+
+	n = n % tuple.Size()
+	l := j - i
+	if n > l {
+		panic(fmt.Sprintf("n = %d greater than interval size = %d", n, l))
+	}
+}
+
+// Rotate in place to right n positions the subsequence in [i, j]
+func (tuple *Tuple) RotateIntervalRightInPlace(i, j, n int) *Tuple {
+
+	tuple.validateRotateIndexes(i, j, n)
+
+	tuple.ReverseInterval(i, i+n-1)
+	tuple.ReverseInterval(i+n, j)
+	tuple.ReverseInterval(i, j)
+
+	return tuple
+}
+
+// Rotate in place to right n positions the subsequence in [i, j]
+func (tuple *Tuple) RotateIntervalLeftInPlace(i, j, n int) *Tuple {
+
+	tuple.validateRotateIndexes(i, j, n)
+
+	tuple.ReverseInterval(j-n+1, j)
+	tuple.ReverseInterval(i, j-n)
+	tuple.ReverseInterval(i, j)
+
+	return tuple
+}
+
+// Rotate in place the sequence n positions to right
+func (tuple *Tuple) RotateRightInPlace(n int) *Tuple {
+	tuple.RotateIntervalRightInPlace(0, tuple.Size()-1, n)
+
+	return tuple
+}
+
+// Rotate in place the sequence n positions to left
+func (tuple *Tuple) RotateLeftInPlace(n int) *Tuple {
+	tuple.RotateIntervalLeftInPlace(0, tuple.Size()-1, n)
+
+	return tuple
+}
+
+// Return a new tuple copy of tuple rotate n position to right
+func (tuple *Tuple) RotateRight(n int) *Tuple {
+	return tuple.clone().RotateRightInPlace(n)
+}
+
+// Return a new tuple copy of tuple rotate n position to left
+func (tuple *Tuple) RotateLeft(n int) *Tuple {
+	return tuple.clone().RotateLeftInPlace(n)
+}
+
+func (tuple *Tuple) clone() *Tuple {
+	return NewTuple(*tuple.l...)
 }
 
 // Execute operation receiving every item of the sequence. Return seq

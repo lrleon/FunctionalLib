@@ -355,7 +355,7 @@ func TestTuple_Reverse(t *testing.T) {
 func TestTuple_RotateIntervalRightInPlace(t *testing.T) {
 
 	tuple := NewTuple(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
-	tuplep := tuple.clone()
+	tuplep := tuple.Clone()
 	ForEach(tuple, func(i interface{}) {
 		fmt.Print(i, " ")
 	})
@@ -376,7 +376,7 @@ func TestTuple_RotateIntervalRightInPlace(t *testing.T) {
 func TestTuple_RotateIntervalLeftInPlace(t *testing.T) {
 
 	tuple := NewTuple(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
-	tuplep := tuple.clone()
+	tuplep := tuple.Clone()
 	ForEach(tuple, func(i interface{}) {
 		fmt.Print(i, " ")
 	})
@@ -397,7 +397,7 @@ func TestTuple_RotateIntervalLeftInPlace(t *testing.T) {
 func TestTuple_clone(t *testing.T) {
 
 	tuple := NewTuple(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
-	assert.True(t, All(Zip(tuple, tuple.clone()), func(pair interface{}) bool {
+	assert.True(t, All(Zip(tuple, tuple.Clone()), func(pair interface{}) bool {
 		return pair.(Pair).Item1.(int) == pair.(Pair).Item2.(int)
 	}))
 }
@@ -405,7 +405,7 @@ func TestTuple_clone(t *testing.T) {
 func TestTuple_RotationsInPlace(t *testing.T) {
 
 	tuple := NewTuple(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
-	tuplep := tuple.clone()
+	tuplep := tuple.Clone()
 
 	tuple.RotateRightInPlace(3)
 

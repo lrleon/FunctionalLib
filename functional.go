@@ -19,6 +19,7 @@ type Sequence interface {
 	Swap(other interface{}) interface{}
 	IsEmpty() bool
 	CreateIterator() interface{}
+	Create(items ...interface{}) interface{}
 }
 
 // Pair A pair of interfaces. Returned by Zip
@@ -40,6 +41,10 @@ func NewTuple(items ...interface{}) *Tuple {
 		*tuple.l = append(*tuple.l, i)
 	}
 	return &tuple
+}
+
+func (tuple *Tuple) Create(items ...interface{}) interface{} {
+	return NewTuple(items...)
 }
 
 // BuildTuple Build a tuple for storing n elements
@@ -251,12 +256,10 @@ func ForEach(seq Sequence, operation func(interface{})) interface{} {
 
 // All Return true if all the elements of the sequence meets predicate
 func All(seq Sequence, predicate func(interface{}) bool) bool {
-
 	return seq.Traverse(predicate)
 }
 
 func Exist(seq Sequence, predicate func(interface{}) bool) bool {
-
 	return !All(seq, func(i interface{}) bool {
 		return !predicate(i)
 	})
@@ -364,7 +367,7 @@ func Find(seq Sequence, predicate func(item interface{}) bool) interface{} {
 	return nil
 }
 
-// Return a sequence containing the first n items from the sequence
+// Take Return a sequence containing the first n items from the sequence
 func Take(seq Sequence, n int) *Seq.Slist {
 
 	ret := Seq.New()
@@ -376,7 +379,7 @@ func Take(seq Sequence, n int) *Seq.Slist {
 	return ret
 }
 
-// Return a sequence containing the items after the first n from the sequence
+// Drop Return a sequence containing the items after the first n from the sequence
 func Drop(seq Sequence, n int) *Seq.Slist {
 
 	ret := Seq.New()
@@ -391,7 +394,7 @@ func Drop(seq Sequence, n int) *Seq.Slist {
 	return ret
 }
 
-// Return f(in, ..., f(i2, f(i1, initVal) ... ))
+// Foldl Return f(in, ..., f(i2, f(i1, initVal) ... ))
 func Foldl(seq Sequence, initVal interface{},
 	f func(acu, item interface{}) interface{}) interface{} {
 
@@ -402,7 +405,7 @@ func Foldl(seq Sequence, initVal interface{},
 	return retVal
 }
 
-// Return the n-th item in the sequence. Return nil if n is negative o greater than seq.Size()
+// Nth Return the n-th item in the sequence. Return nil if n is negative o greater than seq.Size()
 func Nth(seq Sequence, n int) interface{} {
 
 	if n < 0 || n >= seq.Size() {
@@ -419,7 +422,7 @@ func Nth(seq Sequence, n int) interface{} {
 	return nil // it should not be reached!
 }
 
-// Return the position in the sequence of the first element satisfying predicate. If no element satisfies
+// Position Return the position in the sequence of the first element satisfying predicate. If no element satisfies
 // predicate then it returns -1
 func Position(seq Sequence, predicate func(item interface{}) bool) int {
 
@@ -433,7 +436,7 @@ func Position(seq Sequence, predicate func(item interface{}) bool) int {
 	return -1
 }
 
-// Zip all the lists into a list of tuples
+// TZip Zip all the lists into a list of tuples
 func TZip(list *Seq.Slist, lists ...*Seq.Slist) *Seq.Slist {
 
 	sz := len(lists) + 1
@@ -459,7 +462,7 @@ func TZip(list *Seq.Slist, lists ...*Seq.Slist) *Seq.Slist {
 	return ret
 }
 
-// Unzip a list of tuples into a tuple of lists
+// TUnzip Unzip a list of tuples into a tuple of lists
 func TUnzip(tupleList *Seq.Slist) *Tuple {
 
 	tupleSize := tupleList.First().(*Tuple).Size()

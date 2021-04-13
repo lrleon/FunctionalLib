@@ -19,19 +19,20 @@ type Sequence interface {
 	Swap(other interface{}) interface{}
 	IsEmpty() bool
 	CreateIterator() interface{}
+	Create(items ...interface{}) interface{}
 }
 
-// A pair of interfaces. Returned by Zip
+// Pair A pair of interfaces. Returned by Zip
 type Pair struct {
 	Item1, Item2 interface{}
 }
 
-// Represent a tuple
+// Tuple Represent a tuple
 type Tuple struct {
 	l *[]interface{}
 }
 
-// Return a new tuple with the received elements
+// NewTuple Return a new tuple with the received elements
 func NewTuple(items ...interface{}) *Tuple {
 
 	s := make([]interface{}, 0, len(items))
@@ -42,7 +43,11 @@ func NewTuple(items ...interface{}) *Tuple {
 	return &tuple
 }
 
-// Build a tuple for storing n elements
+func (tuple *Tuple) Create(items ...interface{}) interface{} {
+	return NewTuple(items...)
+}
+
+// BuildTuple Build a tuple for storing n elements
 func BuildTuple(n int) *Tuple {
 	s := make([]interface{}, n, n)
 	return &Tuple{l: &s}
@@ -73,7 +78,7 @@ func (tuple *Tuple) Append(item interface{}, items ...interface{}) interface{} {
 	return tuple
 }
 
-// Return the length of the tuple
+// Size Return the length of the tuple
 func (tuple *Tuple) Size() int {
 	return len(*tuple.l)
 }
@@ -85,7 +90,7 @@ func (tuple *Tuple) Swap(other interface{}) interface{} {
 	return tuple
 }
 
-// Return true if the tuple is empty
+// IsEmpty Return true if the tuple is empty
 func (tuple *Tuple) IsEmpty() bool {
 	return tuple.Size() == 0
 }
@@ -95,7 +100,7 @@ type TupleIterator struct {
 	pos   int
 }
 
-// Return an iterator to the tuple compliant with the interface Sequence
+// CreateIterator Return an iterator to the tuple compliant with the interface Sequence
 func (tuple *Tuple) CreateIterator() interface{} {
 	return &TupleIterator{
 		tuple: tuple,
@@ -103,39 +108,39 @@ func (tuple *Tuple) CreateIterator() interface{} {
 	}
 }
 
-// Return an new iterator to the tuple
+// NewTupleIterator Return an new iterator to the tuple
 func NewTupleIterator(tuple Tuple) *TupleIterator {
 	return tuple.CreateIterator().(*TupleIterator)
 }
 
-// Return true if the iterator is on a element
+// HasCurr Return true if the iterator is on a element
 func (it *TupleIterator) HasCurr() bool {
 	return it.pos < len(*it.tuple.l)
 }
 
-// Return the element of which the iterator is positioned
+// GetCurr Return the element of which the iterator is positioned
 func (it *TupleIterator) GetCurr() interface{} {
 	return (*it.tuple.l)[it.pos]
 }
 
-// Advance the iterator to the next item of the tuple
+// Next Advance the iterator to the next item of the tuple
 func (it *TupleIterator) Next() interface{} {
 	it.pos++
 	return it
 }
 
-// Reset the iterator to the first element
+// ResetFirst Reset the iterator to the first element
 func (it *TupleIterator) ResetFirst() interface{} {
 	it.pos = 0
 	return it
 }
 
-// Return the n-th element of the tuple
+// Nth Return the n-th element of the tuple
 func (tuple *Tuple) Nth(i int) interface{} {
 	return (*tuple.l)[i]
 }
 
-// ReverseInPlace the subsequence between i and k
+// ReverseInterval ReverseInPlace the subsequence between i and k
 func (tuple *Tuple) ReverseInterval(i, j int) *Tuple {
 
 	sz := tuple.Size()
@@ -160,14 +165,14 @@ func (tuple *Tuple) ReverseInterval(i, j int) *Tuple {
 	return tuple
 }
 
-// Reverse the tuple in place
+// ReverseInPlace Reverse the tuple in place
 func (tuple *Tuple) ReverseInPlace() *Tuple {
 	return tuple.ReverseInterval(0, tuple.Size()-1)
 }
 
-// Return a reversed copy of tuple
+// Reverse Return a reversed copy of tuple
 func (tuple *Tuple) Reverse() *Tuple {
-	return tuple.clone().ReverseInterval(0, tuple.Size()-1)
+	return tuple.Clone().ReverseInterval(0, tuple.Size()-1)
 }
 
 func (tuple *Tuple) validateRotateIndexes(i, j, n int) {
@@ -186,7 +191,7 @@ func (tuple *Tuple) validateRotateIndexes(i, j, n int) {
 	}
 }
 
-// Rotate in place to right n positions the subsequence in [i, j]
+// RotateIntervalRightInPlace Rotate in place to right n positions the subsequence in [i, j]
 func (tuple *Tuple) RotateIntervalRightInPlace(i, j, n int) *Tuple {
 
 	tuple.validateRotateIndexes(i, j, n)
@@ -198,7 +203,7 @@ func (tuple *Tuple) RotateIntervalRightInPlace(i, j, n int) *Tuple {
 	return tuple
 }
 
-// Rotate in place to right n positions the subsequence in [i, j]
+// RotateIntervalLeftInPlace Rotate in place to right n positions the subsequence in [i, j]
 func (tuple *Tuple) RotateIntervalLeftInPlace(i, j, n int) *Tuple {
 
 	tuple.validateRotateIndexes(i, j, n)
@@ -210,35 +215,35 @@ func (tuple *Tuple) RotateIntervalLeftInPlace(i, j, n int) *Tuple {
 	return tuple
 }
 
-// Rotate in place the sequence n positions to right
+// RotateRightInPlace Rotate in place the sequence n positions to right
 func (tuple *Tuple) RotateRightInPlace(n int) *Tuple {
 	tuple.RotateIntervalRightInPlace(0, tuple.Size()-1, n)
 
 	return tuple
 }
 
-// Rotate in place the sequence n positions to left
+// RotateLeftInPlace Rotate in place the sequence n positions to left
 func (tuple *Tuple) RotateLeftInPlace(n int) *Tuple {
 	tuple.RotateIntervalLeftInPlace(0, tuple.Size()-1, n)
 
 	return tuple
 }
 
-// Return a new tuple copy of tuple rotate n position to right
+// RotateRight Return a new tuple copy of tuple rotate n position to right
 func (tuple *Tuple) RotateRight(n int) *Tuple {
-	return tuple.clone().RotateRightInPlace(n)
+	return tuple.Clone().RotateRightInPlace(n)
 }
 
-// Return a new tuple copy of tuple rotate n position to left
+// RotateLeft Return a new tuple copy of tuple rotate n position to left
 func (tuple *Tuple) RotateLeft(n int) *Tuple {
-	return tuple.clone().RotateLeftInPlace(n)
+	return tuple.Clone().RotateLeftInPlace(n)
 }
 
-func (tuple *Tuple) clone() *Tuple {
+func (tuple *Tuple) Clone() *Tuple {
 	return NewTuple(*tuple.l...)
 }
 
-// Execute operation receiving every item of the sequence. Return seq
+// ForEach Execute operation receiving every item of the sequence. Return seq
 func ForEach(seq Sequence, operation func(interface{})) interface{} {
 
 	seq.Traverse(func(i interface{}) bool {
@@ -249,20 +254,18 @@ func ForEach(seq Sequence, operation func(interface{})) interface{} {
 	return seq
 }
 
-// Return true if all the elements of the sequence meets predicate
+// All Return true if all the elements of the sequence meets predicate
 func All(seq Sequence, predicate func(interface{}) bool) bool {
-
 	return seq.Traverse(predicate)
 }
 
 func Exist(seq Sequence, predicate func(interface{}) bool) bool {
-
 	return !All(seq, func(i interface{}) bool {
 		return !predicate(i)
 	})
 }
 
-// Return a new seq with the items of sequence transformed with transformation operation
+// Map Return a new seq with the items of sequence transformed with transformation operation
 func Map(seq Sequence, transformation func(interface{}) interface{}) *Seq.Slist {
 
 	ret := Seq.New()
@@ -272,7 +275,7 @@ func Map(seq Sequence, transformation func(interface{}) interface{}) *Seq.Slist 
 	return ret
 }
 
-// Return a new seq with the items of sequence transformed with transformation operation for the items
+// MapIf Return a new seq with the items of sequence transformed with transformation operation for the items
 // satisfying the predicate
 func MapIf(seq Sequence,
 	transformation func(interface{}) interface{},
@@ -287,7 +290,7 @@ func MapIf(seq Sequence,
 	return ret
 }
 
-// Return a list containing the items satisfying predicate
+// Filter Return a list containing the items satisfying predicate
 func Filter(seq Sequence, predicate func(interface{}) bool) *Seq.Slist {
 
 	ret := Seq.New()
@@ -364,7 +367,7 @@ func Find(seq Sequence, predicate func(item interface{}) bool) interface{} {
 	return nil
 }
 
-// Return a sequence containing the first n items from the sequence
+// Take Return a sequence containing the first n items from the sequence
 func Take(seq Sequence, n int) *Seq.Slist {
 
 	ret := Seq.New()
@@ -376,7 +379,7 @@ func Take(seq Sequence, n int) *Seq.Slist {
 	return ret
 }
 
-// Return a sequence containing the items after the first n from the sequence
+// Drop Return a sequence containing the items after the first n from the sequence
 func Drop(seq Sequence, n int) *Seq.Slist {
 
 	ret := Seq.New()
@@ -391,7 +394,7 @@ func Drop(seq Sequence, n int) *Seq.Slist {
 	return ret
 }
 
-// Return f(in, ..., f(i2, f(i1, initVal) ... ))
+// Foldl Return f(in, ..., f(i2, f(i1, initVal) ... ))
 func Foldl(seq Sequence, initVal interface{},
 	f func(acu, item interface{}) interface{}) interface{} {
 
@@ -402,7 +405,7 @@ func Foldl(seq Sequence, initVal interface{},
 	return retVal
 }
 
-// Return the n-th item in the sequence. Return nil if n is negative o greater than seq.Size()
+// Nth Return the n-th item in the sequence. Return nil if n is negative o greater than seq.Size()
 func Nth(seq Sequence, n int) interface{} {
 
 	if n < 0 || n >= seq.Size() {
@@ -419,7 +422,7 @@ func Nth(seq Sequence, n int) interface{} {
 	return nil // it should not be reached!
 }
 
-// Return the position in the sequence of the first element satisfying predicate. If no element satisfies
+// Position Return the position in the sequence of the first element satisfying predicate. If no element satisfies
 // predicate then it returns -1
 func Position(seq Sequence, predicate func(item interface{}) bool) int {
 
@@ -433,7 +436,7 @@ func Position(seq Sequence, predicate func(item interface{}) bool) int {
 	return -1
 }
 
-// Zip all the lists into a list of tuples
+// TZip Zip all the lists into a list of tuples
 func TZip(list *Seq.Slist, lists ...*Seq.Slist) *Seq.Slist {
 
 	sz := len(lists) + 1
@@ -459,7 +462,7 @@ func TZip(list *Seq.Slist, lists ...*Seq.Slist) *Seq.Slist {
 	return ret
 }
 
-// Unzip a list of tuples into a tuple of lists
+// TUnzip Unzip a list of tuples into a tuple of lists
 func TUnzip(tupleList *Seq.Slist) *Tuple {
 
 	tupleSize := tupleList.First().(*Tuple).Size()

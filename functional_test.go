@@ -426,3 +426,17 @@ func TestTuple_Rotations(t *testing.T) {
 		return pair.(Pair).Item1.(int) == pair.(Pair).Item2.(int)
 	}))
 }
+
+func TestSearch(t *testing.T) {
+
+	l := Seq.New(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
+	assert.Nil(t, Search(l, func(i interface{}) bool {
+		return i.(int) == 10
+	}))
+
+	val := Search(l, func(i interface{}) bool {
+		return i.(int) == 0
+	})
+	assert.NotNil(t, val)
+	assert.Equal(t, val.(int), 0)
+}

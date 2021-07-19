@@ -302,6 +302,18 @@ func Filter(seq Sequence, predicate func(interface{}) bool) *Seq.Slist {
 	return ret
 }
 
+// Search return the first item meeting predicate. If not found, then it return nil
+func Search(seq Sequence, predicate func(interface{}) bool) interface{} {
+
+	for it := seq.CreateIterator().(SequentialIterator); it.HasCurr(); it.Next() {
+		curr := it.GetCurr()
+		if predicate(curr) {
+			return curr
+		}
+	}
+	return nil
+}
+
 // Zip two lists into one list of pair. The result is truncated to the shortest list
 func Zip(s1, s2 Sequence) *Seq.Slist {
 
@@ -355,7 +367,7 @@ func Split(seq Sequence, predicate func(item interface{}) bool) (*Seq.Slist, *Se
 	return l1, l2
 }
 
-// Return the first item in seq satisfying predicate. If not item is found, the it returns nil
+// Find Return the first item in seq satisfying predicate. If not item is found, the it returns nil
 func Find(seq Sequence, predicate func(item interface{}) bool) interface{} {
 
 	for it := seq.CreateIterator().(SequentialIterator); it.HasCurr(); it.Next() {

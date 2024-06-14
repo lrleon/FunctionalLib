@@ -3,8 +3,8 @@ module github.com/geniussportsgroup/FunctionalLib
 go 1.21
 
 require (
-	github.com/geniussportsgroup/Slist v1.1.0-pre
-	github.com/geniussportsgroup/treaps v1.3.0-pre2
+	github.com/geniussportsgroup/Slist v1.1.0
+	github.com/geniussportsgroup/treaps v1.3.0
 	github.com/stretchr/testify v1.7.0
 )
 

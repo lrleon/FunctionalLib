@@ -1,10 +1,10 @@
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/geniussportsgroup/Slist v1.1.0 h1:ynH6DG4fT+Vct2buWDO8+XowupMNVNRmIL8HRprV+MM=
-github.com/geniussportsgroup/Slist v1.1.0/go.mod h1:KtmTUwp7zybmIB16FBBVm1Gdb11kOnDINmaotgByNXU=
-github.com/geniussportsgroup/treaps v1.3.0 h1:IquOKWLJb6LG2xxPGY4GJ17ZosFcFeCT9ap5DN7LmQ8=
-github.com/geniussportsgroup/treaps v1.3.0/go.mod h1:ajgGPg+tYl9QjC2au7snOMZg8llNpGFSr987x57Sjl8=
+github.com/lrleon/Slist v1.0.1 h1:HKRks19qd07M1rU8u6sKz63cvAKr6ZSnbuc2bn5DNBM=
+github.com/lrleon/Slist v1.0.1/go.mod h1:GegfeZmfH7x2oKG5KKCabLDO4GOnvVtgg86ZdJZr0ZE=
+github.com/lrleon/treaps v1.0.1 h1:3+aTBq9G4CivKHGgH70b194WdSOPJsjB0/Jj/U9WJZM=
+github.com/lrleon/treaps v1.0.1/go.mod h1:yX5mH2WcUUMBUDzLUtyz/LmEqOguK5xwnOgqoRNe8sU=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=

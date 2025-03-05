@@ -1,10 +1,10 @@
-module github.com/geniussportsgroup/FunctionalLib
+module github.com/lrleon/FunctionalLib
 
-go 1.21
+go 1.20
 
 require (
-	github.com/geniussportsgroup/Slist v1.1.0
-	github.com/geniussportsgroup/treaps v1.3.0
+	github.com/lrleon/Slist v1.0.1
+	github.com/lrleon/treaps v1.0.1
 	github.com/stretchr/testify v1.7.0
 )
 
